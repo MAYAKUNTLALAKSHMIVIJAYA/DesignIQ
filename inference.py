@@ -7,3 +7,6 @@ def step(action):
         "reward": 1,
         "done": True
     }
+
+if __name__ == "__main__":
+    print("DesignIQ OpenEnv running")

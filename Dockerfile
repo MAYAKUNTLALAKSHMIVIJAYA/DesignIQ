@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install flask
+RUN pip install --no-cache-dir flask fastapi uvicorn numpy pandas
 
 CMD ["python", "inference.py"]
