@@ -1,0 +1,8 @@
+name: designiq
+description: AI Design Recommendation Environment
+
+entry_point: inference.py
+
+tasks:
+  - name: design_task
+    grader: graders/design_grader.py
