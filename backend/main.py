@@ -8,7 +8,7 @@ import os
 import math
 import hashlib
 from datetime import datetime
-from openenv_models import Observation, Action, Reward, OpenEnvState
+from backend.openenv_models import Observation, Action, Reward, OpenEnvState
 
 app = FastAPI(title="DesignIQ Engine — AI Design Validation")
 
