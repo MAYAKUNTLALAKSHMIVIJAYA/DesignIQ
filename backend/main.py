@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import random
@@ -7,6 +8,7 @@ import os
 import math
 import hashlib
 from datetime import datetime
+from openenv_models import Observation, Action, Reward, OpenEnvState
 
 app = FastAPI(title="DesignIQ Engine — AI Design Validation")
 
@@ -17,6 +19,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount frontend if it exists
+if os.path.exists("../frontend/dist"):
+    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
 
 HISTORY_FILE = "design_history.json"
 LEARNING_FILE = "learning_data.json"
@@ -874,3 +880,110 @@ async def validate_design(
         ai_insight=ai_insight,
         model_version="4.2.0-stable",
     )
+# ============================================================
+# OPENENV HACKATHON SYSTEM — Automated Training & Validation
+# ============================================================
+
+ENV_TASKS = {
+    "task_1": {
+        "name": "Mechanical Baseline (Easy)",
+        "description": "Identify a critical wall thickness violation in a 6061-T6 Aluminum CNC part.",
+        "metadata": {"domain": "Mechanical Engineering", "process": "CNC Machining", "material": "Aluminum"},
+        "target_rule": "Wall Thickness Check",
+        "expected_severity": "Critical"
+    },
+    "task_2": {
+        "name": "Injection Molding Audit (Medium)",
+        "description": "Analyze a complex ABS polymer part for both draft angle and fillet radius optimization.",
+        "metadata": {"domain": "Mechanical Engineering", "process": "Injection Molding", "material": "ABS"},
+        "target_rules": ["Draft Angle Compliance", "Fillet Radius Optimization"],
+    },
+    "task_3": {
+        "name": "Aerospace Grade Validation (Hard)",
+        "description": "Perform full DFM/DFA review for a Titanium aerospace component. Agent must identify FAR compliance risks.",
+        "metadata": {"domain": "Aerospace Engineering", "process": "CNC Precision", "material": "Titanium"},
+        "target_warnings": ["Aerospace design", "Material traceability"]
+    }
+}
+
+# In-memory environment state for current agent session
+# In a real app, this would be in Redis/DB
+env_context = {
+    "current_task": "task_1",
+    "history": [],
+    "is_done": False
+}
+
+@app.post("/reset", response_model=Observation)
+async def reset_env():
+    """Resets the environment to the first task."""
+    env_context["current_task"] = "task_1"
+    env_context["history"] = ["Environment reset to Baseline"]
+    env_context["is_done"] = False
+    
+    task = ENV_TASKS[env_context["current_task"]]
+    return Observation(
+        state="ready",
+        task_description=task["description"],
+        design_metadata=task["metadata"],
+        audit_log=env_context["history"]
+    )
+
+@app.get("/state", response_model=OpenEnvState)
+async def get_env_state():
+    """Returns the current state of the OpenEnv environment."""
+    task = ENV_TASKS[env_context["current_task"]]
+    obs = Observation(
+        state="analyzing" if not env_context["is_done"] else "complete",
+        task_description=task["description"],
+        design_metadata=task["metadata"],
+        audit_log=env_context["history"]
+    )
+    return OpenEnvState(
+        observation=obs,
+        reward=1.0 if env_context["is_done"] else 0.0,
+        done=env_context["is_done"],
+        info={"current_task_id": env_context["current_task"]}
+    )
+
+@app.post("/step", response_model=OpenEnvState)
+async def step_env(action: Action):
+    """Executes a single step in the environment."""
+    if env_context["is_done"]:
+        return await get_env_state()
+
+    env_context["history"].append(f"Action: {action.action_type} | Content: {action.content[:50]}...")
+    
+    reward = 0.0
+    info = {}
+    
+    if action.action_type == "submit_audit":
+        # Simulate grading logic based on current task
+        task_id = env_context["current_task"]
+        task = ENV_TASKS[task_id]
+        
+        # Simple heuristic grading
+        content_lower = (action.content or "").lower()
+        if task_id == "task_1":
+            if "thickness" in content_lower and "critical" in content_lower:
+                reward = 1.0
+                env_context["is_done"] = True
+        elif task_id == "task_2":
+            score = 0.0
+            if "draft" in content_lower: score += 0.5
+            if "fillet" in content_lower or "radius" in content_lower: score += 0.5
+            reward = score
+            if reward >= 1.0: env_context["is_done"] = True
+        elif task_id == "task_3":
+             if "aerospace" in content_lower and "titanium" in content_lower:
+                 reward = 1.0
+                 env_context["is_done"] = True
+                 
+    elif action.action_type == "query":
+        reward = 0.1 # Small reward for probing
+        
+    elif action.action_type == "reset":
+        await reset_env()
+        return await get_env_state()
+
+    return await get_env_state()
