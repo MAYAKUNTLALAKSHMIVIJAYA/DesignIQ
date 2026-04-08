@@ -7,9 +7,17 @@ name = "designiq"
 version = "0.1.0"
 description = "AI-Driven Design Validation Environment"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
+
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
-    "huggingface_hub"
+    "huggingface_hub",
+    "openenv-core>=0.2.0",
+    "pydantic",
+    "requests",
+    "openai"
 ]
+
+[project.scripts]
+start = "inference:main"
