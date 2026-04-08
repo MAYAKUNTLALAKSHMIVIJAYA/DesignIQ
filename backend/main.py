@@ -20,9 +20,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount frontend if it exists
-if os.path.exists("../frontend/dist"):
-    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
+# Mount frontend (Dashboard) - Guaranteed path for HF
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
+else:
+    # Local fallback
+    if os.path.exists("../frontend/dist"):
+        app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
 
 HISTORY_FILE = "design_history.json"
 LEARNING_FILE = "learning_data.json"
@@ -677,9 +681,7 @@ class FeedbackRequest(BaseModel):
 # API ENDPOINTS
 # ============================================================
 
-@app.get("/")
-async def root():
-    return {"engine": "DesignIQ", "version": "4.2.0", "status": "operational"}
+# Root status removed to allow Dashboard to take over /
 
 
 @app.get("/api/domains")
