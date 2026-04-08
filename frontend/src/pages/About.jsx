@@ -3,9 +3,9 @@ import { Users, Calendar, Award, Shield, Target, Zap, Rocket, ChevronRight, Sett
 import { motion } from 'framer-motion';
 
 // Assets (using internal paths for guaranteed production stability on HF)
-const DfmProblem = "../assets/dfm_problem.png";
-const NeuralLogic = "../assets/neural_logic.png";
-const Optimization = "../assets/optimization.png";
+const DfmProblem = "/images/dfm_problem.png";
+const NeuralLogic = "/images/neural_logic.png";
+const Optimization = "/images/optimization.png";
 
 function About() {
   const roadmap = [

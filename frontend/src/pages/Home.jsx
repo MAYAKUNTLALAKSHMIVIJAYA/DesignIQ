@@ -4,9 +4,9 @@ import { ArrowRight, ShieldCheck, Zap, Layers, Cpu, Database, Activity, Brain, C
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Assets (using internal paths for guaranteed production stability on HF)
-const HomeHero = "../assets/home_hero.png";
-const HomeAutomotive = "../assets/home_automotive.png";
-const HomeManufacturing = "../assets/home_manufacturing.png";
+const HomeHero = "/images/home_hero.png";
+const HomeAutomotive = "/images/home_automotive.png";
+const HomeManufacturing = "/images/home_manufacturing.png";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 50 },
