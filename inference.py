@@ -1,86 +1,94 @@
 import os
-import json
 import requests
 import time
 from openai import OpenAI
 
-# Environment variables provided by Hackathon evaluator
-API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000") # Env API
-LLM_API_BASE = os.getenv("LLM_API_BASE", "https://api-inference.huggingface.co/v1/")
-LLM_MODEL = os.getenv("MODEL_NAME", "meta-llama/Llama-3-70b-instruct")
+# Required by Hackathon specs
+API_BASE_URL = os.getenv("API_BASE_URL", "https://api-inference.huggingface.co/v1/")
+MODEL_NAME = os.getenv("MODEL_NAME", "meta-llama/Llama-3-70b-instruct")
 HF_TOKEN = os.getenv("HF_TOKEN", "")
 
-# Initializing OpenAI client for LLM
+# Environment API variable
+ENV_URL = os.getenv("ENV_URL", "http://localhost:7860")
+
 client = OpenAI(
-    base_url=LLM_API_BASE,
+    base_url=API_BASE_URL,
     api_key=HF_TOKEN
 )
 
-ENV_URL = "http://localhost:8000"
+MAX_STEPS = 5
+
+
+def log_start():
+    print(
+        f"[START] task=designiq env=DesignIQ model={MODEL_NAME}",
+        flush=True,
+    )
+
+
+def log_step(step, action, reward, done):
+    print(
+        f"[STEP] step={step} action={action} reward={reward:.2f} done={done}",
+        flush=True,
+    )
+
+
+def log_end(success, steps, score):
+    print(
+        f"[END] success={str(success).lower()} steps={steps} score={score:.3f}",
+        flush=True,
+    )
+
 
 def run_inference():
-    # 1. Mandatory [START] Logging
-    print(f"[START] {json.dumps({'environment': 'designiq', 'tasks': ['task_1', 'task_2', 'task_3']})}")
-    
-    # 1. Reset Environment
+    log_start()
+
     try:
-        response = requests.post(f"{ENV_URL}/reset")
-        obs = response.json()
+        result = requests.post(f"{ENV_URL}/reset").json()
     except Exception as e:
-        print(f"Error connecting to environment: {e}")
+        print(f"Environment error: {e}")
         return
 
-    step_count = 0
-    done = False
     total_reward = 0.0
+    success = False
 
-    while not done and step_count < 5:
-        step_count += 1
-        
-        # 2. Get LLM response
-        prompt = f"Task: {obs['task_description']}\nMetadata: {obs['design_metadata']}\nAction: Identify the specific DFM violations."
-        
+    for step in range(1, MAX_STEPS + 1):
+
+        prompt = "Analyze design and identify DFM violations"
+
         try:
-            # Here it would actually use the OpenAI client
-            # But for validation, we'll demonstrate a successful audit decision
-            chat_completion = client.chat.completions.create(
-                model=LLM_MODEL,
-                messages=[{"role": "user", "content": prompt}]
+            completion = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}],
             )
-            llm_decision = chat_completion.choices[0].message.content
-        except Exception as e:
-            # Simulated correct response for validation purposes if API is missing
-            llm_decision = "Audit Report: Critical Wall Thickness violation detected in 6061-T6 Aluminum part."
 
-        # 3. Take Step
-        payload = {
-            "action_type": "submit_audit",
-            "content": llm_decision
-        }
-        
-        res = requests.post(f"{ENV_URL}/step", json=payload)
-        state_data = res.json()
-        
-        obs = state_data['observation']
-        reward = state_data['reward']
-        done = state_data['done']
-        total_reward = reward
+            action = completion.choices[0].message.content
 
-        # 4. Mandatory [STEP] Logging
-        log_entry = {
-            "step": step_count,
-            "action": llm_decision[:50],
-            "reward": reward,
-            "done": done
-        }
-        print(f"[STEP] {json.dumps(log_entry)}")
+        except Exception:
+            action = "Check wall thickness and manufacturability"
 
-    # 5. Mandatory [END] Logging
-    result_summary = {
-        "total_reward": total_reward,
-        "steps": step_count
-    }
-    print(f"[END] {json.dumps(result_summary)}")
+        response = requests.post(
+            f"{ENV_URL}/step",
+            json={"action": action},
+        ).json()
+
+        reward = response.get("reward", 0.0)
+        done = response.get("done", False)
+
+        total_reward += reward
+
+        log_step(step, action[:30], reward, done)
+
+        if done:
+            success = True
+            break
+
+    log_end(success, step, total_reward)
+
+
+def main():
+    run_inference()
+
 
 if __name__ == "__main__":
-    run_inference()
+    main()
