@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Zap, Layers, Cpu, Database, Activity, Brain, ChevronRight, Settings, BarChart3, Terminal, Upload, Play, BookOpen, Globe, Sparkles, Target } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
-// Assets
-import HomeHero from '../assets/home_hero.png';
-import HomeAutomotive from '../assets/home_automotive.png';
-import HomeManufacturing from '../assets/home_manufacturing.png';
+// Assets (using public/assets for production stability)
+const HomeHero = "/assets/home_hero.png";
+const HomeAutomotive = "/assets/home_automotive.png";
+const HomeManufacturing = "/assets/home_manufacturing.png";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 50 },

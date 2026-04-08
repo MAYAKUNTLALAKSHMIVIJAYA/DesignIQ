@@ -2,10 +2,10 @@ import React from 'react';
 import { Users, Calendar, Award, Shield, Target, Zap, Rocket, ChevronRight, Settings, BarChart3, Info, Globe, Cpu, Network, ShieldCheck, Brain, Layers, Database, Activity, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Assets
-import DfmProblem from '../assets/dfm_problem.png';
-import NeuralLogic from '../assets/neural_logic.png';
-import Optimization from '../assets/optimization.png';
+// Assets (using public/assets for production stability)
+const DfmProblem = "/assets/dfm_problem.png";
+const NeuralLogic = "/assets/neural_logic.png";
+const Optimization = "/assets/optimization.png";
 
 function About() {
   const roadmap = [
