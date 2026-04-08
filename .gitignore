@@ -31,3 +31,9 @@ Thumbs.db
 uploads/
 design_history.json
 mock_part.stl
+
+# Vite Cache
+frontend/.vite/
+
+# Nested Repo
+deployment/.git
