@@ -959,15 +959,6 @@ async def step_env(action: Action):
         return await get_env_state()
 
     return await get_env_state()
-                 
-    elif action.action_type == "query":
-        reward = 0.1 # Small reward for probing
-        
-    elif action.action_type == "reset":
-        await reset_env()
-        return await get_env_state()
-
-    return await get_env_state()
 
 # Mount frontend (Dashboard) - Guaranteed path for HF
 if os.path.exists("frontend/dist"):
