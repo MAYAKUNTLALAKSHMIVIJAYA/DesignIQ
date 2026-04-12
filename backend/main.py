@@ -994,7 +994,9 @@ async def step_env(action: Action):
     return await get_env_state()
 
 # Mount frontend (Dashboard) - Guaranteed path for HF
-if os.path.exists("static"):
+if os.path.exists("frontend/dist"):
+    app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
+elif os.path.exists("static"):
     app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
 else:
     # Local fallback
