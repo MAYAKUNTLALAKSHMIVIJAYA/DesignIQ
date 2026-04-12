@@ -883,9 +883,11 @@ async def validate_design(
 
 ENV_TASKS = {
     f"task_{i}": {
+        "id": f"task_{i}",
         "name": f"Validation Task {i}",
         "description": f"Identify vulnerabilities in the design for task domain {i}.",
         "difficulty": "medium" if i < 10 else "hard",
+        "grader": f"tasks.grader_{i}:grade",
         "metadata": {"task_index": i}
     } for i in range(1, 16)
 }
@@ -918,8 +920,8 @@ async def reset_env(task_id: Optional[str] = None):
 
 @app.get("/tasks")
 async def list_tasks():
-    """Returns the list of all available tasks for the validator."""
-    return {"tasks": list(ENV_TASKS.keys()), "metadata": ENV_TASKS}
+    """Returns the list of all available tasks for the validator in a discovery-compliant format."""
+    return [task for task in ENV_TASKS.values()]
 
 @app.get("/state", response_model=OpenEnvState)
 async def get_env_state():
