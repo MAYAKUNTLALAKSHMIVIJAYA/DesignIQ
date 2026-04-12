@@ -1,6 +1,20 @@
 def grade(response):
-    """Grader for Task 12"""
+    """Advanced Grader for Turbine Blade (Superalloy)"""
     content = str(response).lower()
-    if len(content) > 10:
-        return 0.95
-    return 0.05
+    score = 0.05
+    keywords = ["turbine", "blade", "creep"]
+    
+    # Calculate keyword coverage
+    matches = sum(1 for kw in keywords if kw in content)
+    
+    if matches >= len(keywords) - 1 and len(keywords) > 1:
+        score = 0.95
+    elif matches >= 1:
+        score = 0.5
+    
+    # Penalize short/unprofessional responses
+    if len(content) < 50:
+        score = min(score, 0.3)
+    
+    # Final clamping for validator (0, 1) range
+    return max(0.01, min(0.99, score))

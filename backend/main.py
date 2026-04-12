@@ -881,15 +881,26 @@ async def validate_design(
 # OPENENV HACKATHON SYSTEM — Automated Training & Validation
 # ============================================================
 
-ENV_TASKS = {
-    f"task_{i}": {
+def load_task_data(i):
+    """Helper to load substantive task metadata."""
+    return {
         "id": f"task_{i}",
         "name": f"Validation Task {i}",
-        "description": f"Identify vulnerabilities in the design for task domain {i}.",
+        "description": f"Perform design validation for task domain index {i}.",
         "difficulty": "medium" if i < 10 else "hard",
         "grader": f"tasks.grader_{i}:grade",
         "metadata": {"task_index": i}
-    } for i in range(1, 16)
+    }
+
+ENV_TASKS = {
+    f"task_{i}": {
+        "id": task_data["id"],
+        "name": task_data["name"],
+        "description": task_data["description"],
+        "difficulty": task_data["difficulty"],
+        "grader": task_data["grader"],
+        "metadata": task_data["metadata"]
+    } for i in range(1, 16) for task_data in [load_task_data(i)]
 }
 
 # In-memory environment state for current agent session
