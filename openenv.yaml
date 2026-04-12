@@ -5,37 +5,107 @@ author: DesignIQ Team
 entry_point: inference.py
 
 tasks:
-  - id: task_1_thickness
-    name: task_1_thickness
-    description: Baseline Mechanical Wall Thickness Review
+  - id: task_1
+    name: Validation Task 1
+    description: Identify vulnerabilities in the design for task domain 1.
     difficulty: easy
-    path: tasks/task_1_thickness.py
+    path: tasks/task_1.py
     grader: tasks.grader_1:grade
 
-  - id: task_2_molding
-    name: task_2_molding
-    description: Advanced Injection Molding DFM Audit
-    difficulty: medium
-    path: tasks/task_2_molding.py
+  - id: task_2
+    name: Validation Task 2
+    description: Identify vulnerabilities in the design for task domain 2.
+    difficulty: easy
+    path: tasks/task_2.py
     grader: tasks.grader_2:grade
 
-  - id: task_3_aerospace
-    name: task_3_aerospace
-    description: High-Fidelity Aerospace Structural Validation
-    difficulty: hard
-    path: tasks/task_3_aerospace.py
+  - id: task_3
+    name: Validation Task 3
+    description: Identify vulnerabilities in the design for task domain 3.
+    difficulty: easy
+    path: tasks/task_3.py
     grader: tasks.grader_3:grade
 
-  - id: task_4_cnc_precision
-    name: task_4_cnc_precision
-    description: CNC Precision Tolerance (Hard)
-    difficulty: hard
-    path: tasks/task_4_cnc_precision.py
+  - id: task_4
+    name: Validation Task 4
+    description: Identify vulnerabilities in the design for task domain 4.
+    difficulty: easy
+    path: tasks/task_4.py
     grader: tasks.grader_4:grade
 
-  - id: task_5_additive_validation
-    name: task_5_additive_validation
-    description: Additive Support Optimization (Hard)
-    difficulty: hard
-    path: tasks/task_5_additive_validation.py
+  - id: task_5
+    name: Validation Task 5
+    description: Identify vulnerabilities in the design for task domain 5.
+    difficulty: easy
+    path: tasks/task_5.py
     grader: tasks.grader_5:grade
+
+  - id: task_6
+    name: Validation Task 6
+    description: Identify vulnerabilities in the design for task domain 6.
+    difficulty: easy
+    path: tasks/task_6.py
+    grader: tasks.grader_6:grade
+
+  - id: task_7
+    name: Validation Task 7
+    description: Identify vulnerabilities in the design for task domain 7.
+    difficulty: easy
+    path: tasks/task_7.py
+    grader: tasks.grader_7:grade
+
+  - id: task_8
+    name: Validation Task 8
+    description: Identify vulnerabilities in the design for task domain 8.
+    difficulty: easy
+    path: tasks/task_8.py
+    grader: tasks.grader_8:grade
+
+  - id: task_9
+    name: Validation Task 9
+    description: Identify vulnerabilities in the design for task domain 9.
+    difficulty: easy
+    path: tasks/task_9.py
+    grader: tasks.grader_9:grade
+
+  - id: task_10
+    name: Validation Task 10
+    description: Identify vulnerabilities in the design for task domain 10.
+    difficulty: hard
+    path: tasks/task_10.py
+    grader: tasks.grader_10:grade
+
+  - id: task_11
+    name: Validation Task 11
+    description: Identify vulnerabilities in the design for task domain 11.
+    difficulty: hard
+    path: tasks/task_11.py
+    grader: tasks.grader_11:grade
+
+  - id: task_12
+    name: Validation Task 12
+    description: Identify vulnerabilities in the design for task domain 12.
+    difficulty: hard
+    path: tasks/task_12.py
+    grader: tasks.grader_12:grade
+
+  - id: task_13
+    name: Validation Task 13
+    description: Identify vulnerabilities in the design for task domain 13.
+    difficulty: hard
+    path: tasks/task_13.py
+    grader: tasks.grader_13:grade
+
+  - id: task_14
+    name: Validation Task 14
+    description: Identify vulnerabilities in the design for task domain 14.
+    difficulty: hard
+    path: tasks/task_14.py
+    grader: tasks.grader_14:grade
+
+  - id: task_15
+    name: Validation Task 15
+    description: Identify vulnerabilities in the design for task domain 15.
+    difficulty: hard
+    path: tasks/task_15.py
+    grader: tasks.grader_15:grade

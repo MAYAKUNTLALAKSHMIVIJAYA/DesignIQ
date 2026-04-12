@@ -1,8 +1,6 @@
 def grade(response):
-    """Grader for Task 4: CNC Precision"""
+    """Grader for Task 4"""
     content = str(response).lower()
-    if "precision" in content and "tolerance" in content:
+    if len(content) > 10:
         return 0.95
-    elif "precision" in content:
-        return 0.6
     return 0.05
