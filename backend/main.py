@@ -916,6 +916,11 @@ async def reset_env(task_id: Optional[str] = None):
         audit_log=env_context["history"]
     )
 
+@app.get("/tasks")
+async def list_tasks():
+    """Returns the list of all available tasks for the validator."""
+    return {"tasks": list(ENV_TASKS.keys()), "metadata": ENV_TASKS}
+
 @app.get("/state", response_model=OpenEnvState)
 async def get_env_state():
     """Returns the current state of the OpenEnv environment."""
