@@ -120,7 +120,7 @@ const ScoreGauge = ({ score, confidence }) => (
     <div className="space-y-3">
       <div>
             <div className="text-secondary/50 font-mono text-[10px] uppercase tracking-widest mb-1">AI Confidence</div>
-            <div className="text-primary font-black text-3xl">{( (result.confidence || 0.98) * 100).toFixed(0)}%</div>
+            <div className="text-primary font-black text-3xl">{( (confidence || 0.98) * 100).toFixed(0)}%</div>
       </div>
       <div>
         <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-1">Model</span>
@@ -505,7 +505,7 @@ function Dashboard() {
                     <p className="text-3xl font-black neon-text uppercase tracking-widest italic animate-pulse">Analyzing Design...</p>
                     <p className="text-[10px] text-gray-600 uppercase tracking-widest mt-4 font-bold">Running PointNet++ feature extraction • Applying DFM rules</p>
                  </motion.div>
-               ) : result.isError ? (
+               ) : result?.isError ? (
                  <motion.div key="error" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-red-500/5 border border-red-500/20 rounded-[2rem]">
                     <ShieldAlert className="w-20 h-20 text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
                     <h3 className="text-2xl font-black text-red-400 uppercase tracking-widest mb-4">INVALID DESIGN DETECTED</h3>
@@ -525,18 +525,18 @@ function Dashboard() {
                     
                     {/* Score + Confidence Header */}
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white/[0.02] border border-white/5 rounded-[2rem] p-8">
-                      <ScoreGauge score={result.score} confidence={result.confidence} />
+                      <ScoreGauge score={result?.score} confidence={result?.confidence} />
                       <div className="flex flex-wrap gap-3">
-                        <span className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[9px] font-black text-primary uppercase tracking-widest">{result.domain}</span>
-                        <span className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest">{result.process}</span>
-                        <span className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest">{result.material}</span>
+                        <span className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[9px] font-black text-primary uppercase tracking-widest">{result?.domain}</span>
+                        <span className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest">{result?.process}</span>
+                        <span className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest">{result?.material}</span>
                       </div>
                     </div>
 
                     {/* Warnings */}
-                    {result.warnings && result.warnings.length > 0 && (
+                    {result?.warnings && result?.warnings.length > 0 && (
                       <div className="space-y-2">
-                        {result.warnings.map((w, i) => (
+                        {result?.warnings.map((w, i) => (
                           <div key={i} className="flex items-start gap-3 px-5 py-3 bg-amber-500/5 border border-amber-500/20 rounded-xl">
                             <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                             <span className="text-[11px] text-amber-200 font-medium">{w}</span>
@@ -570,13 +570,13 @@ function Dashboard() {
                     </div>
 
                     {/* AI Insight */}
-                    {result.ai_insight && (
+                    {result?.ai_insight && (
                       <div className="px-6 py-4 bg-primary/5 border border-primary/20 rounded-2xl">
                         <div className="flex items-center gap-2 mb-2">
                           <Cpu className="w-4 h-4 text-primary" />
                           <span className="text-[9px] font-black text-primary uppercase tracking-widest">AI Insight</span>
                         </div>
-                        <p className="text-[11px] text-gray-400 font-medium leading-relaxed">{result.ai_insight}</p>
+                        <p className="text-[11px] text-gray-400 font-medium leading-relaxed">{result?.ai_insight}</p>
                       </div>
                     )}
 
@@ -585,8 +585,8 @@ function Dashboard() {
                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-3">
                          <BarChart3 className="w-5 h-5 text-primary" /> Detailed Findings
                        </h3>
-                       {result.errors?.map((error, idx) => {
-                          const suggestion = result.suggestions?.find(f => f.id === error.id);
+                       {result?.errors?.map((error, idx) => {
+                          const suggestion = result?.suggestions?.find(f => f.id === error.id);
                           return (
                             <div key={idx} className="bg-white/[0.03] border border-white/5 rounded-[2rem] p-8 hover:bg-white/[0.05] transition-all group/find overflow-hidden relative">
                                <div className={`absolute top-0 left-0 w-2 h-full ${error.severity === 'Critical' ? 'bg-red-500' : error.severity === 'High' ? 'bg-amber-500' : 'bg-blue-400'} opacity-40`} />

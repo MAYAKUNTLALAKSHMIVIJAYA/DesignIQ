@@ -43,7 +43,7 @@ function Home() {
   const y1 = useTransform(scrollY, [0, 500], [0, 120]);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-[#0F1225] text-gray-100 font-outfit select-none lg:pt-0">
+    <div className="min-h-screen relative overflow-x-hidden bg-[#0F1225] text-gray-100 font-outfit lg:pt-0">
       <BlueprintGrid />
 
       {/* Hero Section */}
@@ -59,7 +59,7 @@ function Home() {
             <div className="inline-flex items-center gap-4 px-8 py-3 rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-3xl group hover:border-primary/40 transition-all">
               <Zap className="w-5 h-5 text-primary drop-shadow-[0_0_10px_rgba(99,102,241,1)]" />
               <span className="text-[11px] font-black uppercase tracking-[0.6em] text-gray-400 group-hover:text-white transition-colors">
-                DesignIQ // AI Engineering Platform
+                <span className="text-primary font-black text-xs drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]">DesignIQ</span> // AI Engineering Platform
               </span>
             </div>
 

@@ -19,9 +19,9 @@ client = OpenAI(
 MAX_STEPS = 5
 
 
-def log_start():
+def log_start(task_name="designiq"):
     print(
-        f"[START] task=designiq env=DesignIQ model={MODEL_NAME}",
+        f"[START] task={task_name} env=DesignIQ model={MODEL_NAME}",
         flush=True,
     )
 
@@ -41,12 +41,14 @@ def log_end(success, steps, score):
 
 
 def run_inference():
-    log_start()
-
     try:
-        result = requests.post(f"{ENV_URL}/reset").json()
+        # Check for task_id in environment or default to task_1_thickness
+        target_task = os.getenv("OPENENV_TASK_ID", "task_1_thickness")
+        result = requests.post(f"{ENV_URL}/reset", params={"task_id": target_task}).json()
+        log_start(target_task)
     except Exception as e:
         print(f"Environment error: {e}")
+        log_start("designiq") # Fallback
         return
 
     total_reward = 0.0
@@ -69,7 +71,7 @@ def run_inference():
 
         response = requests.post(
             f"{ENV_URL}/step",
-            json={"action": action},
+            json={"action_type": "submit_audit", "content": action},
         ).json()
 
         reward = response.get("reward", 0.0)

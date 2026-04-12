@@ -5,17 +5,20 @@ author: DesignIQ Team
 entry_point: inference.py
 
 tasks:
-  - name: task_1_thickness
+  - id: task_1_thickness
+    name: task_1_thickness
     description: Baseline Mechanical Wall Thickness Review
     path: tasks/task_1_thickness.py
     grader: graders/grader_1.py
 
-  - name: task_2_molding
+  - id: task_2_molding
+    name: task_2_molding
     description: Advanced Injection Molding DFM Audit
     path: tasks/task_2_molding.py
     grader: graders/grader_2.py
 
-  - name: task_3_aerospace
+  - id: task_3_aerospace
+    name: task_3_aerospace
     description: High-Fidelity Aerospace Structural Validation
     path: tasks/task_3_aerospace.py
     grader: graders/grader_3.py

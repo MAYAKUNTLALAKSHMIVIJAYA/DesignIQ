@@ -8,7 +8,7 @@ import os
 import math
 import hashlib
 from datetime import datetime
-from backend.openenv_models import Observation, Action, Reward, OpenEnvState
+from openenv_models import Observation, Action, Reward, OpenEnvState
 
 app = FastAPI(title="DesignIQ Engine — AI Design Validation")
 
@@ -20,13 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount frontend (Dashboard) - Guaranteed path for HF
-if os.path.exists("static"):
-    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
-else:
-    # Local fallback
-    if os.path.exists("../frontend/dist"):
-        app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
+
 
 HISTORY_FILE = "design_history.json"
 LEARNING_FILE = "learning_data.json"
@@ -887,20 +881,20 @@ async def validate_design(
 # ============================================================
 
 ENV_TASKS = {
-    "task_1": {
+    "task_1_thickness": {
         "name": "Mechanical Baseline (Easy)",
         "description": "Identify a critical wall thickness violation in a 6061-T6 Aluminum CNC part.",
         "metadata": {"domain": "Mechanical Engineering", "process": "CNC Machining", "material": "Aluminum"},
         "target_rule": "Wall Thickness Check",
         "expected_severity": "Critical"
     },
-    "task_2": {
+    "task_2_molding": {
         "name": "Injection Molding Audit (Medium)",
         "description": "Analyze a complex ABS polymer part for both draft angle and fillet radius optimization.",
         "metadata": {"domain": "Mechanical Engineering", "process": "Injection Molding", "material": "ABS"},
         "target_rules": ["Draft Angle Compliance", "Fillet Radius Optimization"],
     },
-    "task_3": {
+    "task_3_aerospace": {
         "name": "Aerospace Grade Validation (Hard)",
         "description": "Perform full DFM/DFA review for a Titanium aerospace component. Agent must identify FAR compliance risks.",
         "metadata": {"domain": "Aerospace Engineering", "process": "CNC Precision", "material": "Titanium"},
@@ -911,16 +905,20 @@ ENV_TASKS = {
 # In-memory environment state for current agent session
 # In a real app, this would be in Redis/DB
 env_context = {
-    "current_task": "task_1",
+    "current_task": "task_1_thickness",
     "history": [],
     "is_done": False
 }
 
 @app.post("/reset", response_model=Observation)
-async def reset_env():
-    """Resets the environment to the first task."""
-    env_context["current_task"] = "task_1"
-    env_context["history"] = ["Environment reset to Baseline"]
+async def reset_env(task_id: Optional[str] = None):
+    """Resets the environment to the first task or specified task."""
+    if task_id and task_id in ENV_TASKS:
+        env_context["current_task"] = task_id
+    else:
+        env_context["current_task"] = "task_1_thickness"
+        
+    env_context["history"] = [f"Environment reset to {env_context['current_task']}"]
     env_context["is_done"] = False
     
     task = ENV_TASKS[env_context["current_task"]]
@@ -943,7 +941,7 @@ async def get_env_state():
     )
     return OpenEnvState(
         observation=obs,
-        reward=1.0 if env_context["is_done"] else 0.0,
+        reward=0.95 if env_context["is_done"] else 0.05,
         done=env_context["is_done"],
         info={"current_task_id": env_context["current_task"]}
     )
@@ -966,20 +964,24 @@ async def step_env(action: Action):
         
         # Simple heuristic grading
         content_lower = (action.content or "").lower()
-        if task_id == "task_1":
+        if task_id == "task_1_thickness":
             if "thickness" in content_lower and "critical" in content_lower:
-                reward = 1.0
+                reward = 0.95
                 env_context["is_done"] = True
-        elif task_id == "task_2":
-            score = 0.0
-            if "draft" in content_lower: score += 0.5
-            if "fillet" in content_lower or "radius" in content_lower: score += 0.5
+            else:
+                reward = 0.05
+        elif task_id == "task_2_molding":
+            score = 0.05
+            if "draft" in content_lower: score += 0.45
+            if "fillet" in content_lower or "radius" in content_lower: score += 0.45
             reward = score
-            if reward >= 1.0: env_context["is_done"] = True
-        elif task_id == "task_3":
+            if reward >= 0.90: env_context["is_done"] = True
+        elif task_id == "task_3_aerospace":
              if "aerospace" in content_lower and "titanium" in content_lower:
-                 reward = 1.0
+                 reward = 0.95
                  env_context["is_done"] = True
+             else:
+                 reward = 0.05
                  
     elif action.action_type == "query":
         reward = 0.1 # Small reward for probing
@@ -989,3 +991,11 @@ async def step_env(action: Action):
         return await get_env_state()
 
     return await get_env_state()
+
+# Mount frontend (Dashboard) - Guaranteed path for HF
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
+else:
+    # Local fallback
+    if os.path.exists("../frontend/dist"):
+        app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")

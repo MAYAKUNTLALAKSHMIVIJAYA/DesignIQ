@@ -9,7 +9,7 @@ const Optimization = "/images/optimization.png";
 
 function About() {
   const roadmap = [
-    { label: 'Round 1 Submission', date: 'March 25 - April 8', status: 'In Evolution', desc: 'Deploy the 3-domain AI engine with Mechanical, Aerospace, and 3D Additive validation.' },
+    { label: 'Round 1 Submission', date: 'March 25 - April 12', status: 'In Evolution', desc: 'Deploy the 3-domain AI engine with Mechanical, Aerospace, and 3D Additive validation.' },
     { label: 'Model Refinement', date: 'April 10 - April 15', status: 'Upcoming', desc: 'Expand PointNet++ training to handle complex multi-part assemblies and nested geometries.' },
     { label: 'The Finale', date: 'April 25 - 26', status: 'Endgame', desc: 'Final pitch & 1:1 demo with industry mentors and manufacturing engineers.' },
   ];

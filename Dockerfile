@@ -27,6 +27,7 @@ USER user
 # Copy backend requirements and install
 COPY --chown=user backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install openenv-core
 
 # Copy everything else
 COPY --chown=user . .
