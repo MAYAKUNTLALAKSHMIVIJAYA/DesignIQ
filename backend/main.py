@@ -885,21 +885,32 @@ ENV_TASKS = {
     "task_1_thickness": {
         "name": "Mechanical Baseline (Easy)",
         "description": "Identify a critical wall thickness violation in a 6061-T6 Aluminum CNC part.",
+        "difficulty": "easy",
         "metadata": {"domain": "Mechanical Engineering", "process": "CNC Machining", "material": "Aluminum"},
-        "target_rule": "Wall Thickness Check",
-        "expected_severity": "Critical"
     },
     "task_2_molding": {
         "name": "Injection Molding Audit (Medium)",
         "description": "Analyze a complex ABS polymer part for both draft angle and fillet radius optimization.",
+        "difficulty": "medium",
         "metadata": {"domain": "Mechanical Engineering", "process": "Injection Molding", "material": "ABS"},
-        "target_rules": ["Draft Angle Compliance", "Fillet Radius Optimization"],
     },
     "task_3_aerospace": {
         "name": "Aerospace Grade Validation (Hard)",
         "description": "Perform full DFM/DFA review for a Titanium aerospace component. Agent must identify FAR compliance risks.",
+        "difficulty": "hard",
         "metadata": {"domain": "Aerospace Engineering", "process": "CNC Precision", "material": "Titanium"},
-        "target_warnings": ["Aerospace design", "Material traceability"]
+    },
+    "task_4_cnc_precision": {
+        "name": "CNC Precision Tolerance (Hard)",
+        "description": "Verify high-precision tolerances and surface finish requirements for a hardened steel component.",
+        "difficulty": "hard",
+        "metadata": {"domain": "Mechanical Engineering", "process": "CNC Machining", "material": "Steel"},
+    },
+    "task_5_additive_validation": {
+        "name": "Additive Support Optimization (Hard)",
+        "description": "Optimize support structures and build orientation for a complex 3D printed Nylon part.",
+        "difficulty": "hard",
+        "metadata": {"domain": "3D Design / Additive", "process": "FDM", "material": "Nylon"},
     }
 }
 
@@ -979,6 +990,18 @@ async def step_env(action: Action):
             if reward >= 0.90: env_context["is_done"] = True
         elif task_id == "task_3_aerospace":
              if "aerospace" in content_lower and "titanium" in content_lower:
+                 reward = 0.95
+                 env_context["is_done"] = True
+             else:
+                 reward = 0.05
+        elif task_id == "task_4_cnc_precision":
+             if "precision" in content_lower and "tolerance" in content_lower:
+                 reward = 0.95
+                 env_context["is_done"] = True
+             else:
+                 reward = 0.05
+        elif task_id == "task_5_additive_validation":
+             if "additive" in content_lower and "support" in content_lower:
                  reward = 0.95
                  env_context["is_done"] = True
              else:

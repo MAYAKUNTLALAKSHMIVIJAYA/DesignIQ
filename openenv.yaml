@@ -8,17 +8,34 @@ tasks:
   - id: task_1_thickness
     name: task_1_thickness
     description: Baseline Mechanical Wall Thickness Review
+    difficulty: easy
     path: tasks/task_1_thickness.py
-    grader: graders.grader_1:grade
+    grader: tasks.grader_1:grade
 
   - id: task_2_molding
     name: task_2_molding
     description: Advanced Injection Molding DFM Audit
+    difficulty: medium
     path: tasks/task_2_molding.py
-    grader: graders.grader_2:grade
+    grader: tasks.grader_2:grade
 
   - id: task_3_aerospace
     name: task_3_aerospace
     description: High-Fidelity Aerospace Structural Validation
+    difficulty: hard
     path: tasks/task_3_aerospace.py
-    grader: graders.grader_3:grade
+    grader: tasks.grader_3:grade
+
+  - id: task_4_cnc_precision
+    name: task_4_cnc_precision
+    description: CNC Precision Tolerance (Hard)
+    difficulty: hard
+    path: tasks/task_4_cnc_precision.py
+    grader: tasks.grader_4:grade
+
+  - id: task_5_additive_validation
+    name: task_5_additive_validation
+    description: Additive Support Optimization (Hard)
+    difficulty: hard
+    path: tasks/task_5_additive_validation.py
+    grader: tasks.grader_5:grade
