@@ -9,16 +9,16 @@ tasks:
     name: task_1_thickness
     description: Baseline Mechanical Wall Thickness Review
     path: tasks/task_1_thickness.py
-    grader: graders/grader_1.py
+    grader: graders.grader_1:grade
 
   - id: task_2_molding
     name: task_2_molding
     description: Advanced Injection Molding DFM Audit
     path: tasks/task_2_molding.py
-    grader: graders/grader_2.py
+    grader: graders.grader_2:grade
 
   - id: task_3_aerospace
     name: task_3_aerospace
     description: High-Fidelity Aerospace Structural Validation
     path: tasks/task_3_aerospace.py
-    grader: graders/grader_3.py
+    grader: graders.grader_3:grade
