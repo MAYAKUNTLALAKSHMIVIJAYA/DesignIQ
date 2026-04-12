@@ -42,8 +42,8 @@ def log_end(success, steps, score):
 
 def run_inference():
     try:
-        # Check for task_id in environment or default to task_1_thickness
-        target_task = os.getenv("OPENENV_TASK_ID", "task_1_thickness")
+        # Check for task_id in environment or default to task_1
+        target_task = os.getenv("OPENENV_TASK_ID", "task_1")
         result = requests.post(f"{ENV_URL}/reset", params={"task_id": target_task}).json()
         log_start(target_task)
     except Exception as e:
